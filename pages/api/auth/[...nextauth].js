@@ -39,41 +39,47 @@ export const authOptions = {
     }),
     // ...add more providers here
   ],
-  secret: process.env.JWT_SECRET,
+  session: {
+    jwt: true,
+  },
+  jwt: {
+    secret: process.env.JWT_SECRET,
+  },
   pages: {
     signIn: "/login",
+  },
+  callbacks: {
+    async jwt({ token, account }) {
+      // initial sign in
+          if (account) {
+        //   console.log(account)
+        return {
+          ...token,
+          accessToken: account.access_token,
+          refreshToken: account.refresh_token,
+          username: account.providerAccountId,
+          accessTokenExpires: account.expires_at * 1000, // we are handlinig expiry times in Milliseconds hence * 1000
+        };
+      }
+
+      // Return previous token if the access token has not expired yet
+      if (Date.now() < token.accessTokenExpires) {
+        console.log("EXISTING ACCESS TOKEN IS VALID");
+        return token;
+      }
+
+      // Access token has expired, so we need to refresh it...
+      console.log("ACCESS TOKEN HAS EXPIRED, REFRESHING...");
+      return await refreshAccessToken(token);
     },
-    callbacks: {
-        async jwt({ token, account, user }) {
-             // initial sign in
-            if (account && user) {
-                return {
-                    ...token,
-                    accessToken: account.access_token,
-                    refreshToken: account.refresh_token,
-                    username: account.provierAccountId,
-                    accessTokenExpires: account.expires_at * 1000, // we are handlinig expiry times in Milliseconds hence * 1000
-                }
-            }
-
-            // Return previous token if the access token has not expired yet
-            if (Date.now() < token.accessTokenExpires) {
-                console.log("EXISTING ACCESS TOKEN IS VALID")
-                return token
-            }
-
-            // Access token has expired, so we need to refresh it...
-            console.log("ACCESS TOKEN HAS EXPIRED, REFRESHING...")
-            return await refreshAccessToken(token)
-        },
-        async session({ session, token }) {
-            session.user.accessToken = token.accessToken
-            session.user.refreshToken = token.refreshToken
-            session.user.username = token.username
-
-            return session
-        }
-  }
+      async session({ session, token, user }) {
+          console.log(session)
+      session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
+      session.user.name = token.name;
+      return session;
+    },
+  },
 };
 
 export default NextAuth(authOptions);
