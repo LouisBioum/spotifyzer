@@ -35,7 +35,28 @@ export const authOptions = {
     SpotifyProvider({
       clientId: process.env.NEXT_PUBLIC_CLIENT_ID,
       clientSecret: process.env.NEXT_PUBLIC_CLIENT_SECRET,
-      authorization: LOGIN_URL,
+      // authorization: LOGIN_URL,
+      authorization: {
+        url: "https://accounts.spotify.com/authorize",
+        params: {
+          scope: [
+            "user-read-email",
+            "playlist-read-private",
+            "playlist-read-collaborative",
+            "user-read-email",
+            "streaming",
+            "user-read-private",
+            "user-library-read",
+            "user-top-read",
+            // "user-library-modify"
+            "user-read-playback-state",
+            "user-modify-playback-state",
+            "user-read-currently-playing",
+            "user-read-recently-played",
+            "user-follow-read",
+          ].join(" "),
+        },
+      },
     }),
     // ...add more providers here
   ],
@@ -52,8 +73,8 @@ export const authOptions = {
     async jwt({ token, account }) {
       // initial sign in
 
-          if (account) {
-           console.log(account)
+      if (account) {
+        console.log(account);
         return {
           ...token,
           accessToken: account.access_token,
@@ -73,11 +94,11 @@ export const authOptions = {
       //console.log("ACCESS TOKEN HAS EXPIRED, REFRESHING...");
       return await refreshAccessToken(token);
     },
-      async session({ session, token, user }) {
+    async session({ session, token, user }) {
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
-        session.user.name = token.name;
-        session.accessTokenExpires = token.accessTokenExpires;
+      session.user.name = token.name;
+      session.accessTokenExpires = token.accessTokenExpires;
       return session;
     },
   },
