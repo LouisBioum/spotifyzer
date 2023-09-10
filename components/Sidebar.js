@@ -1,5 +1,6 @@
 "use client";;
 
+import { playlistIdState } from "@/atoms/playlistAtom";
 import useSpotify from "@/hooks/useSpotify";
 import {
   HomeIcon,
@@ -9,17 +10,20 @@ import {
     HeartIcon,
   RSSIcon
 } from "@heroicons/react/24/outline";
-import { getServerSession } from "next-auth";
+// import { getServerSession } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 
 
 function Sidebar() {
   // const { data: session, status } = useSession()
   const [playlists, setPlaylists] = useState([])
+  const [playlistId, setPlaylistId] = useRecoilState(playlistIdState)
   const spotifyApi = useSpotify()
   const { data: session, status } = useSession()
   //console.log(session)
+  console.log("You picked playlist >>>", playlistId)
 
   let token = null;
   useEffect(() => {
@@ -62,7 +66,7 @@ function Sidebar() {
         <hr className="border-t-[0.1px] border-gray-900" />
 
         <button className="flex items-center space-x-2 hover:text-white">
-          <PlusCircleIcon className="h-5 w-5" />
+          <PlusCircleIcon clas sName="h-5 w-5" />
           <p>Create Playlist</p>
         </button>
         <button className="flex items-center space-x-2 hover:text-white">
@@ -77,7 +81,7 @@ function Sidebar() {
 
         {/* Playlist */}
         {playlists.map(playlist => (
-          <p className="cursor-pointer hover:text-white">{ playlist.name}</p>
+          <p key={playlist.id} onClick={()=>setPlaylistId(playlist.id)} className="cursor-pointer hover:text-white">{ playlist.name}</p>
         ))}
         
       </div>
