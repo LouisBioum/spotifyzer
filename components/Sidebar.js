@@ -1,5 +1,6 @@
-'use client';
+"use client";;
 
+import useSpotify from "@/hooks/useSpotify";
 import {
   HomeIcon,
   MagnifyingGlassIcon,
@@ -8,11 +9,35 @@ import {
     HeartIcon,
   RSSIcon
 } from "@heroicons/react/24/outline";
+import { getServerSession } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+
 
 function Sidebar() {
-    const { data: session, status } = useSession()
-    console.log(session)
+  // const { data: session, status } = useSession()
+  const [playLists, setPlayLists] = useState([])
+  const spotifyApi = useSpotify()
+  const { data: session, status } = useSession()
+  console.log(session)
+
+  let token = null;
+  useEffect(() => {
+    // console.log(spotifyApi)
+    if (spotifyApi.getAccessToken()) {
+      console.log("Got access token")
+      spotifyApi
+        .getUserPlaylists("119549609")
+        .then((data) => {
+          setPlayLists(data.body.items);
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+    }
+  }, [session, spotifyApi])
   return (
     <div className="text-gray-500 p-5 text-sm border-r border-gray-900 overflow-y-scroll scrollbar-hide h-screen">
       <div className="space-y-4">
@@ -66,3 +91,12 @@ function Sidebar() {
   );
 }
 export default Sidebar
+
+// export async function getServerSideProps() {
+//   const {data, session} = getServerSession()
+//   return {
+//     props: {
+//       session
+//     }
+//   }
+// }
