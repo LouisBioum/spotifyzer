@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 
 function Sidebar() {
   // const { data: session, status } = useSession()
-  const [playLists, setPlayLists] = useState([])
+  const [playlists, setPlaylists] = useState([])
   const spotifyApi = useSpotify()
   const { data: session, status } = useSession()
   //console.log(session)
@@ -29,7 +29,7 @@ function Sidebar() {
       spotifyApi
         .getUserPlaylists("119549609")
         .then((data) => {
-          setPlayLists(data.body.items);
+          setPlaylists(data.body.items);
           console.log(data);
         })
         .catch((err) => {
@@ -76,16 +76,10 @@ function Sidebar() {
         <hr className="border-t-[0.1px] border-gray-900" />
 
         {/* Playlist */}
-        <p className="cursor-pointer hover:text-white">Playlist name...</p>
-        <p className="cursor-pointer hover:text-white">Playlist name...</p>
-        <p className="cursor-pointer hover:text-white">Playlist name...</p>
-        <p className="cursor-pointer hover:text-white">Playlist name...</p>
-        <p className="cursor-pointer hover:text-white">Playlist name...</p>
-        <p className="cursor-pointer hover:text-white">Playlist name...</p>
-        <p className="cursor-pointer hover:text-white">Playlist name...</p>
-        <p className="cursor-pointer hover:text-white">Playlist name...</p>
-        <p className="cursor-pointer hover:text-white">Playlist name...</p>
-        <p className="cursor-pointer hover:text-white">Playlist name...</p>
+        {playlists.map(playlist => (
+          <p className="cursor-pointer hover:text-white">{ playlist.name}</p>
+        ))}
+        
       </div>
     </div>
   );
