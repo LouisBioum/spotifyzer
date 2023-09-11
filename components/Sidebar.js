@@ -29,12 +29,12 @@ function Sidebar() {
   useEffect(() => {
     // console.log(spotifyApi)
     if (spotifyApi.getAccessToken()) {
-      console.log("Got access token")
+      //console.log("Got access token")
       spotifyApi
         .getUserPlaylists("119549609")
         .then((data) => {
           setPlaylists(data.body.items);
-          console.log(data);
+          //console.log(data);
         })
         .catch((err) => {
           console.log(err);
@@ -43,7 +43,9 @@ function Sidebar() {
     }
   }, [session, spotifyApi])
   return (
-    <div className="text-gray-500 p-5 text-sm border-r border-gray-900 overflow-y-scroll scrollbar-hide h-screen">
+    <div className="text-gray-500 p-5 text-xs lg:text-sm border-r 
+    border-gray-900 overflow-y-scroll scrollbar-hide h-screen
+    sm:max-w-[12rem] lg:max-w-[15rem] hidden md:inline-flex">
       <div className="space-y-4">
               <button
                   className="flex items-center space-x-2 hover:text-white"
@@ -66,7 +68,7 @@ function Sidebar() {
         <hr className="border-t-[0.1px] border-gray-900" />
 
         <button className="flex items-center space-x-2 hover:text-white">
-          <PlusCircleIcon clas sName="h-5 w-5" />
+          <PlusCircleIcon className="h-5 w-5" />
           <p>Create Playlist</p>
         </button>
         <button className="flex items-center space-x-2 hover:text-white">
