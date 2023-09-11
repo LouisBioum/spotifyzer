@@ -23,7 +23,7 @@ function Sidebar() {
   const spotifyApi = useSpotify()
   const { data: session, status } = useSession()
   //console.log(session)
-  console.log("You picked playlist >>>", playlistId)
+  // console.log("You picked playlist >>>", playlistId)
 
   let token = null;
   useEffect(() => {
@@ -31,7 +31,7 @@ function Sidebar() {
     if (spotifyApi.getAccessToken()) {
       //console.log("Got access token")
       spotifyApi
-        .getUserPlaylists("119549609")
+        .getUserPlaylists()
         .then((data) => {
           setPlaylists(data.body.items);
           //console.log(data);

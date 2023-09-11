@@ -9,11 +9,12 @@ function Song({ order, track }) {
     const [isPlayinf, setIsPlaying] = useRecoilState(isPlayingState)
 
     const playSong = () => {
-        setCurrentTrackId(track.track.id)
+        setCurrentTrackId(
+          track.track.id)
         setIsPlaying(true)
-        spotifyApi.play({uris: [track.track.uri]})
+        //spotifyApi.play({uris: [track.track.uri]})
     }
-    console.log(track.track)
+     //console.log(track.track)
 
   return (
       <div className="grid grid-cols-2 text-gray-500 py-4 hover:bg-gray-900 rounded-lg cursor-pointer"
