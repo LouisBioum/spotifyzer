@@ -6,11 +6,10 @@ import {
   HomeIcon,
   MagnifyingGlassIcon,
   BuildingLibraryIcon,
-    PlusCircleIcon,
-  RSSIcon
+  PlusCircleIcon,
 } from "@heroicons/react/24/outline";
 import {
-  HeartIcon,
+  HeartIcon, RssIcon,
 } from "@heroicons/react/24/solid";
 // import { getServerSession } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
@@ -73,7 +72,7 @@ function Sidebar() {
           <p>Liked Songs</p>
         </button>
         <button className="flex items-center space-x-2 hover:text-white">
-          <RSSIcon className="h-5 w-5 text-green-500" />
+          <RssIcon className="h-5 w-5 text-green-500" />
           <p>Your Episodes</p>
         </button>
         <hr className="border-t-[0.1px] border-gray-900" />
