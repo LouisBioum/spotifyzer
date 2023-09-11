@@ -2,7 +2,7 @@ import { currentTrackIdState, isPlayingState } from "@/atoms/songAtom"
 import useSongInfo from "@/hooks/useSongInfo"
 import useSpotify from "@/hooks/useSpotify"
 import { useSession } from "next-auth/react"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRecoilState } from "recoil"
 import { HeartIcon, SpeakerWaveIcon as VolumeDownIcon } from "@heroicons/react/24/outline";
 import {
@@ -11,9 +11,10 @@ import {
   PauseIcon,
   PlayIcon,
   ArrowUturnLeftIcon,
-  SpeakerWaveIcon,
+  SpeakerWaveIcon as VolumeUpIcon,
   ArrowsRightLeftIcon,
 } from "@heroicons/react/24/solid";
+import { debounce } from "lodash"
 
 function Player() {
   const spotifyApi = useSpotify()
@@ -54,10 +55,24 @@ function Player() {
     setVolume(50)
     console.log(`isPlaying : ${isPlaying}`)
   }, [currentTrackIdState, spotifyApi, session])
+
+  const debounceAdjustVolume = useCallback(
+    debounce((volume) => {
+      //spotifyApi.setVolume(volume).catch((err) => {})  - Requires premium
+    }, 500),
+    []
+  )
+
+  useEffect(() => {
+    if (volume > 0 && volume < 100) {
+      debounceAdjustVolume(volume)
+    }
+  }, [volume])
+
   return (
     <div
       className="h-24 bg-gradient-to-b from-black to-gray-900 text-white 
-    grid grid-col-3 text-xs md:text-base px-2 md:px-8"
+    grid grid-cols-3 text-xs md:text-base px-2 md:px-8"
     >
       {/* Left */}
       <div className="flex items-center space-x-4">
@@ -75,7 +90,10 @@ function Player() {
       {/* Center */}
       <div className="flex items-center justify-evenly">
         <ArrowsRightLeftIcon className="button" />
-        <BackwardIcon className="button" />
+        <BackwardIcon
+          onClick={() => spotifyApi.skipToPrevious()}
+          className="button"
+        />
         {/* onClick={() => spotifyApi.skipToPrevious()} - Check if working (premium)*/}
 
         {isPlaying ? (
@@ -84,8 +102,21 @@ function Player() {
           <PlayIcon onClick={handlePlayPause} className="button w-10 h-10" />
         )}
 
-        <ForwardIcon className="button" />
+        <ForwardIcon
+          onClick={() => spotifyApi.skipToNext()}
+          className="button"
+        />
         {/* {onclick{() => spotifyApi.skipToNext()}} - Check if working (premium)*/}
+      </div>
+
+      {/* Right */}
+      <div className="flex items-center space-x-3 md:space-x-4 justify-end pr-5">
+        <VolumeDownIcon
+        onClick={() => volume > 0 && setVolume(volume - 10)}  className="button" />
+        <input className="w-14 md:w-28" type="range"
+          value={volume} onChange={(e) => setVolume(Number(e.target.volume))} min={0} max={100} />
+        <VolumeUpIcon
+          onClick={() => volume < 100 && setVolume(volume + 10)}  className="button" />
       </div>
     </div>
   );
