@@ -78,7 +78,10 @@ function Player() {
       <div className="flex items-center space-x-4">
         <img
           className="hidden md:inline h-10 w-10"
-          src={songInfo?.album.images?.[0].url}
+          src={
+            songInfo?.album.images?.[0].url ||
+            "https://cdn.dribbble.com/users/80243/screenshots/638952/cover-art.png"
+          }
           alt=""
         />
         <div>
@@ -112,11 +115,21 @@ function Player() {
       {/* Right */}
       <div className="flex items-center space-x-3 md:space-x-4 justify-end pr-5">
         <VolumeDownIcon
-        onClick={() => volume > 0 && setVolume(volume - 10)}  className="button" />
-        <input className="w-14 md:w-28" type="range"
-          value={volume} onChange={(e) => setVolume(Number(e.target.volume))} min={0} max={100} />
+          onClick={() => volume > 0 && setVolume(volume - 10)}
+          className="button"
+        />
+        <input
+          className="w-14 md:w-28"
+          type="range"
+          value={volume}
+          onChange={(e) => setVolume(Number(e.target.volume))}
+          min={0}
+          max={100}
+        />
         <VolumeUpIcon
-          onClick={() => volume < 100 && setVolume(volume + 10)}  className="button" />
+          onClick={() => volume < 100 && setVolume(volume + 10)}
+          className="button"
+        />
       </div>
     </div>
   );
